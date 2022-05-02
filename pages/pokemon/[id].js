@@ -2,7 +2,20 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
 
-export async function getServerSideProps(context) {
+export async function getStaticPaths(context) {
+  const res = await fetch(
+    "https://jherr-pokemon.s3.us-west-1.amazonaws.com/index.json"
+  );
+  const pokemons = await res.json();
+  return {
+    paths: pokemons.map((pokemon) => ({
+      params: { id: pokemon.id.toString() },
+    })),
+    fallback: false,
+  };
+}
+
+export async function getStaticProps(context) {
   const id = context.params.id;
   const response = await fetch(
     `https://jherr-pokemon.s3.us-west-1.amazonaws.com/pokemon/${id}.json`

@@ -1,8 +1,7 @@
 import Link from "next/link";
 import Head from "next/head";
 import { useState, useEffect } from "react";
-export default function Home({ data }) {
-  const [pokemons, _] = useState(data);
+export default function Home({ pokemons }) {
   return (
     <>
       <Head>
@@ -40,14 +39,14 @@ export default function Home({ data }) {
   );
 }
 
-export async function getServerSideProps() {
+export async function getStaticProps() {
   const res = await fetch(
     "https://jherr-pokemon.s3.us-west-1.amazonaws.com/index.json"
   );
-  const data = await res.json();
+  const pokemons = await res.json();
   return {
     props: {
-      data,
+      pokemons,
     },
   };
 }
