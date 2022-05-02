@@ -1,16 +1,20 @@
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
-export default function Pokemon() {
-  const id = useRouter().query.id;
-  const [pokemon, setPokemon] = useState(null);
-  useEffect(() => {
-    const data = fetch(
-      `https://jherr-pokemon.s3.us-west-1.amazonaws.com/pokemon/${id}.json`
-    )
-      .then((res) => res.json())
-      .then((data) => setPokemon(data));
-  }, []);
+
+export async function getServerSideProps(context) {
+  const id = context.params.id;
+  const response = await fetch(
+    `https://jherr-pokemon.s3.us-west-1.amazonaws.com/pokemon/${id}.json`
+  );
+  return {
+    props: {
+      pokemon: await response.json(),
+    },
+  };
+}
+
+export default function Pokemon({ pokemon }) {
   if (pokemon) {
     return (
       <>

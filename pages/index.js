@@ -1,18 +1,8 @@
 import Link from "next/link";
 import Head from "next/head";
 import { useState, useEffect } from "react";
-export default function Home() {
-  const [pokemons, setPokemons] = useState([]);
-
-  useEffect(() => {
-    const data = fetch(
-      "https://jherr-pokemon.s3.us-west-1.amazonaws.com/index.json"
-    )
-      .then((res) => res.json())
-      .then((data) => {
-        setPokemons(data);
-      });
-  }, []);
+export default function Home({ data }) {
+  const [pokemons, _] = useState(data);
   return (
     <>
       <Head>
@@ -48,4 +38,16 @@ export default function Home() {
       </div>
     </>
   );
+}
+
+export async function getServerSideProps() {
+  const res = await fetch(
+    "https://jherr-pokemon.s3.us-west-1.amazonaws.com/index.json"
+  );
+  const data = await res.json();
+  return {
+    props: {
+      data,
+    },
+  };
 }
